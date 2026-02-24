@@ -36,11 +36,83 @@ Step 5: **Security Foundation
 The security of RSA relies on the difficulty of factoring large numbers; thus, choosing sufficiently large prime numbers for \( p \) and \( q \) is crucial for security.
 
 ## Program:
+```
+#include <stdio.h>
 
+// Function to calculate GCD
+int gcd(int a, int b) {
+    while (b != 0) {
+        int temp = b;
+        b = a % b;
+        a = temp;
+    }
+    return a;
+}
+
+// Function to find modular inverse
+int modInverse(int e, int phi) {
+    int d;
+    for (d = 1; d < phi; d++) {
+        if ((e * d) % phi == 1)
+            return d;
+    }
+    return -1;
+}
+
+// Function for modular exponentiation
+long long modPow(long long base, long long exp, long long mod) {
+    long long result = 1;
+    base = base % mod;
+    while (exp > 0) {
+        if (exp % 2 == 1)
+            result = (result * base) % mod;
+        exp = exp / 2;
+        base = (base * base) % mod;
+    }
+    return result;
+}
+
+int main() {
+    int p = 3, q = 11;
+    int n, phi, e = 7, d;
+    int msg;
+    long long encrypted, decrypted;
+
+    // Step 1: Calculate n
+    n = p * q;
+
+    // Step 2: Calculate phi
+    phi = (p - 1) * (q - 1);
+
+    // Step 3: Choose e
+    while (gcd(e, phi) != 1)
+        e++;
+
+    // Step 4: Calculate d
+    d = modInverse(e, phi);
+
+    printf("Public Key (e, n) = (%d, %d)\n", e, n);
+    printf("Private Key (d, n) = (%d, %d)\n", d, n);
+
+    printf("Enter message (number less than %d): ", n);
+    scanf("%d", &msg);
+
+    // Encryption
+    encrypted = modPow(msg, e, n);
+    printf("Encrypted Message: %lld\n", encrypted);
+
+    // Decryption
+    decrypted = modPow(encrypted, d, n);
+    printf("Decrypted Message: %lld\n", decrypted);
+
+    return 0;
+}
+```
 
 
 
 ## Output:
+<img width="1919" height="1143" alt="image" src="https://github.com/user-attachments/assets/421f02bf-e6dc-40be-9d25-44517a8461a0" />
 
 
 
